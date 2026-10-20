@@ -13,7 +13,7 @@
 
   // Product card slideshows
   $$(".slides").forEach((s, i) => {
-    const imgs = $$("img", s);
+    const imgs = $$("img, video", s);
     if (imgs.length < 2 || reduce) return;
     let k = 0;
     setTimeout(() => setInterval(() => {
@@ -186,10 +186,15 @@
       scrollTrigger: { trigger: p, start: "top 70%", toggleActions: "play none none reverse" },
     });
   });
-  gsap.from(".more__list li", {
-    y: 30, opacity: 0, duration: 0.8, ease: "power3.out", stagger: 0.05,
-    scrollTrigger: { trigger: ".more", start: "top 80%", toggleActions: "play none none reverse" },
+  gsap.from(".chip", {
+    y: 60, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.05,
+    scrollTrigger: { trigger: ".chips", start: "top 85%" },
   });
+  // Pause product videos when off-screen
+  $$(".slides video").forEach((v) => ScrollTrigger.create({
+    trigger: v.closest(".product"), start: "top bottom", end: "bottom top",
+    onToggle: (self) => (self.isActive ? v.play().catch(() => {}) : v.pause()),
+  }));
 
   /* ---------- Markets: cards slide over the pinned giant text ---------- */
   gsap.from(".markets__giant span", {
