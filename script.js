@@ -15,13 +15,31 @@
   $$(".slides").forEach((s, i) => {
     const imgs = $$("img, video", s);
     if (imgs.length < 2 || reduce) return;
+    // Hidden slides keep their image in data-* until just before they are shown
+    const load = (el) => {
+      if (el.dataset.srcset) { el.srcset = el.dataset.srcset; delete el.dataset.srcset; }
+      if (el.dataset.src) { el.src = el.dataset.src; delete el.dataset.src; }
+    };
     let k = 0;
     setTimeout(() => setInterval(() => {
+      if (s.getBoundingClientRect().bottom < -innerHeight || s.getBoundingClientRect().top > innerHeight * 2) return;
       imgs[k].classList.remove("is-on");
       k = (k + 1) % imgs.length;
+      load(imgs[k]);
       imgs[k].classList.add("is-on");
+      load(imgs[(k + 1) % imgs.length]);
     }, 2800), i * 600);
   });
+
+  // Product videos: only download/play while on screen
+  const vids = $$(".slides video");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting && !reduce) e.target.play().catch(() => {});
+      else e.target.pause();
+    }), { rootMargin: "200px 0px" });
+    vids.forEach((v) => io.observe(v));
+  } else if (!reduce) vids.forEach((v) => { v.preload = "auto"; v.play().catch(() => {}); });
 
   // Without GSAP (offline / blocked CDN) or with reduced motion: show everything, no scroll effects
   if (!window.gsap || !window.ScrollTrigger || reduce) {
@@ -31,6 +49,8 @@
   }
 
   gsap.registerPlugin(ScrollTrigger);
+  // Don't recalculate every time the mobile address bar shows/hides
+  ScrollTrigger.config({ ignoreMobileResize: true });
   const vh = () => window.innerHeight;
   const vw = () => window.innerWidth;
 
@@ -57,8 +77,8 @@
   const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
   intro
     .fromTo(".hero__img",
-      { yPercent: 16, opacity: 0, filter: `${baseFilter} blur(14px)` },
-      { yPercent: 0, opacity: 1, filter: `${baseFilter} blur(0px)`, duration: 1.8 })
+      { yPercent: 16, filter: `${baseFilter} blur(14px)` },
+      { yPercent: 0, filter: `${baseFilter} blur(0px)`, duration: 1.8 })
     .from(".hero__glow", { scale: 0.4, opacity: 0, duration: 2 }, 0)
     .from(".hero__title .m > span", { yPercent: 115, duration: 1.3, stagger: 0.07 }, 0.3)
     .from(".hero__title .badge, .hero__intro", { opacity: 0, y: 24, duration: 1.1, stagger: 0.12 }, 0.8)
@@ -190,11 +210,6 @@
     y: 60, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.05,
     scrollTrigger: { trigger: ".chips", start: "top 85%" },
   });
-  // Pause product videos when off-screen
-  $$(".slides video").forEach((v) => ScrollTrigger.create({
-    trigger: v.closest(".product"), start: "top bottom", end: "bottom top",
-    onToggle: (self) => (self.isActive ? v.play().catch(() => {}) : v.pause()),
-  }));
 
   /* ---------- Markets: cards slide over the pinned giant text ---------- */
   gsap.from(".markets__giant span", {

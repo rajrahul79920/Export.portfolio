@@ -3,7 +3,7 @@
   --bg-2: #1a1916;
   --ink: #d6cbb2;
   --ink-dim: #8d8574;
-  --ink-faint: #35322c;
+  --ink-faint: #6b6556; /* unrevealed words: still 3:1 contrast for large text */
   --line: #2a2823;
   --radius: 8px;
   --gutter: clamp(16px, 5vw, 96px);
@@ -11,7 +11,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 body {
@@ -115,7 +115,7 @@ figure { margin: 0; }
 .logo { font-weight: 700; font-size: 15px; letter-spacing: .32em; line-height: 1.05; display: inline-block; }
 .logo__sq { display: inline-block; width: .72em; height: .72em; background: var(--ink); margin: 0 .3em 0 .02em; vertical-align: -.02em; }
 .hero__contact { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-.hero__contact a { color: var(--ink); opacity: .85; transition: opacity .2s; }
+.hero__contact a { color: var(--ink); opacity: .85; transition: opacity .2s; padding: 3px 0; min-height: 24px; }
 .hero__contact a:hover { opacity: 1; }
 
 /* Title sits below the face: face ends at ~31% of the photo height */
@@ -167,11 +167,11 @@ figure { margin: 0; }
   font-size: 13px; color: var(--ink-dim);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .hero { --ph: 62svh; }
   .hero__title {
     top: 13svh;
-    font-size: 15vw;
+    font-size: min(15vw, 104px);
     align-items: flex-start;
     padding: 0 var(--gutter);
   }
@@ -182,16 +182,20 @@ figure { margin: 0; }
     position: absolute; left: var(--gutter); top: calc(100% + 14px);
     max-width: 260px; font-size: 13px; margin: 0;
   }
+}
+@media (max-width: 760px) {
   .hero__contact a:first-child { display: none; }
+  .hero__foot { display: none; }
 }
 
 /* ---------- MAIN sits on top of the sticky hero ---------- */
-.main { position: relative; z-index: 5; background: var(--bg); }
-.footer { position: relative; z-index: 5; background: var(--bg); }
+/* overflow-x: clip keeps animated/offset elements from widening the page on phones (and doesn't break sticky) */
+.main { position: relative; z-index: 5; background: var(--bg); overflow-x: clip; }
+.footer { position: relative; z-index: 5; background: var(--bg); overflow-x: clip; }
 
 /* ---------- WHAT (floating cards) ---------- */
 .what { position: relative; height: 260vh; }
-.what__sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; }
+.what__sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; align-items: center; }
 .what__grid { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 2.6fr; gap: 40px; }
 .big-text {
   font-size: clamp(30px, 4.6vw, 64px);
@@ -216,6 +220,7 @@ figure { margin: 0; }
 .fl img { width: 100%; height: 100%; object-fit: cover; }
 html:not(.js) .floaters { display: none; }
 @media (max-width: 800px) {
+  .what { height: 200vh; }
   .what__grid { grid-template-columns: 1fr; gap: 20px; }
   .fl { min-width: 130px; width: calc(var(--w) * 2); }
 }
@@ -294,7 +299,7 @@ html:not(.js) .floaters { display: none; }
 /* ---------- MARKETS ---------- */
 .markets { position: relative; padding-bottom: 20vh; }
 .markets__sticky {
-  position: sticky; top: 0; height: 100vh;
+  position: sticky; top: 0; height: 100vh; height: 100svh;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   gap: 10px;
 }
@@ -329,7 +334,11 @@ html:not(.js) .floaters { display: none; }
 .pill { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; border: 1px solid var(--ink-dim); border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
 .pill--solid { background: var(--ink); color: var(--bg); border-color: var(--ink); font-weight: 700; }
 .markets__note { color: var(--ink-dim); text-align: center; max-width: 480px; padding: 0 var(--gutter); }
-@media (max-width: 700px) { .mcard { left: 0; } }
+@media (max-width: 700px) {
+  .markets__cards { gap: 14vh; margin-top: -45vh; }
+  .mcard { left: 0; }
+  .mcard h3 { font-size: 26px; }
+}
 
 /* ---------- NUMBERS ---------- */
 .numbers { padding-top: 40px; }
@@ -343,6 +352,7 @@ html:not(.js) .floaters { display: none; }
 .stat__n { font-size: clamp(40px, 4.4vw, 62px); font-weight: 700; letter-spacing: -.03em; line-height: 1; }
 .stat__l { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-dim); }
 @media (max-width: 900px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .stat { min-height: 150px; padding: 20px 16px 16px; } .stat__n { font-size: 34px; } }
 
 /* ---------- ABOUT ---------- */
 .about__lead { max-width: 1000px; }
@@ -358,7 +368,7 @@ html:not(.js) .floaters { display: none; }
 
 /* ---------- GROUND (horizontal) ---------- */
 .ground { position: relative; }
-.ground__pin { height: 100vh; display: flex; align-items: center; overflow: hidden; gap: 40px; padding-left: var(--gutter); }
+.ground__pin { height: 100vh; height: 100svh; display: flex; align-items: center; overflow: hidden; gap: 40px; padding-left: var(--gutter); }
 .ground__text { flex: 0 0 min(330px, 34vw); display: flex; flex-direction: column; gap: 24px; }
 .ground__text p:last-child { color: var(--ink-dim); font-size: 15px; }
 .ground__view { flex: 1; min-width: 0; overflow: hidden; }
@@ -402,7 +412,7 @@ html:not(.js) .ground__view, .no-motion .ground__view { overflow-x: auto; }
 .step { padding: 30px 26px 40px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .3s; }
 .step:hover { background: var(--bg-2); }
 .step span { font-size: 13px; color: var(--ink-dim); }
-.step h4 { font-size: 21px; font-weight: 600; margin: 40px 0 10px; }
+.step h3 { font-size: 21px; font-weight: 600; margin: 40px 0 10px; }
 .step p { color: var(--ink-dim); font-size: 15px; }
 @media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
@@ -422,7 +432,7 @@ html:not(.js) .ground__view, .no-motion .ground__view { overflow-x: auto; }
 
 /* ---------- CTA ---------- */
 .cta { position: relative; height: 220vh; border-top: 1px solid var(--line); }
-.cta__sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display: grid; place-items: center; }
+.cta__sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; place-items: center; }
 .scatter { position: absolute; inset: 0; perspective: 900px; }
 .scatter figure {
   position: absolute; left: 50%; top: 50%;
@@ -483,7 +493,14 @@ html:not(.js) .ground__view, .no-motion .ground__view { overflow-x: auto; }
 @media (max-width: 800px) {
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .footer__cards { grid-column: 1 / -1; }
-  }
+}
+@media (max-width: 600px) {
+  .section { padding: 72px 0; }
+  .footer { padding: 70px 0 110px; }
+  .footer__ready { min-width: 0; }
+  .footer__bottom { gap: 16px; }
+  .cta { height: 180vh; }
+}
 
 /* ---------- DOCK ---------- */
 .dock {

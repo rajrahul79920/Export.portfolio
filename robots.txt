@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rajrahul79920.github.io/Export.portfolio/sitemap.xml
