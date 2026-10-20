@@ -114,8 +114,9 @@ figure { margin: 0; }
 }
 .logo { font-weight: 700; font-size: 15px; letter-spacing: .32em; line-height: 1.05; display: inline-block; }
 .logo__sq { display: inline-block; width: .72em; height: .72em; background: var(--ink); margin: 0 .3em 0 .02em; vertical-align: -.02em; }
-.hero__mail { color: var(--ink); opacity: .85; }
-.hero__mail:hover { opacity: 1; }
+.hero__contact { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.hero__contact a { color: var(--ink); opacity: .85; transition: opacity .2s; }
+.hero__contact a:hover { opacity: 1; }
 
 /* Title sits below the face: face ends at ~31% of the photo height */
 .hero__title {
@@ -181,7 +182,7 @@ figure { margin: 0; }
     position: absolute; left: var(--gutter); top: calc(100% + 14px);
     max-width: 260px; font-size: 13px; margin: 0;
   }
-  .hero__mail { display: none; }
+  .hero__contact a:first-child { display: none; }
 }
 
 /* ---------- MAIN sits on top of the sticky hero ---------- */
@@ -429,6 +430,26 @@ html:not(.js) .ground__view, .no-motion .ground__view { overflow-x: auto; }
 .cta__title { font-size: clamp(42px, 6vw, 92px); font-weight: 600; line-height: 1; letter-spacing: -.035em; text-shadow: 0 10px 40px rgba(0,0,0,.6); }
 .cta__actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 14px; }
 @media (max-width: 700px) { .scatter figure { width: calc(var(--w) * 2.2); } }
+
+/* ---------- CONTACT DETAILS ---------- */
+.contact-info { border-top: 1px solid var(--line); }
+.clist { border-top: 1px solid var(--line); }
+.clist a {
+  display: grid; grid-template-columns: 160px 1fr auto; align-items: center; gap: 20px;
+  padding: clamp(18px, 2.4vw, 28px) 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding .3s, color .2s;
+}
+.clist a:hover { padding-left: 14px; color: #fff; }
+.clist__k { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-dim); }
+.clist__v { font-size: clamp(22px, 3.4vw, 46px); font-weight: 600; letter-spacing: -.02em; line-height: 1.1; word-break: break-word; }
+.clist__a { font-size: clamp(20px, 2.4vw, 32px); transition: transform .25s; }
+.clist a:hover .clist__a { transform: translateX(6px); }
+.contact-info__note { margin-top: 28px; color: var(--ink-dim); font-size: 14px; }
+@media (max-width: 600px) {
+  .clist a { grid-template-columns: 1fr auto; gap: 6px 12px; }
+  .clist__k { grid-column: 1 / -1; }
+}
 
 /* ---------- FOOTER ---------- */
 .footer { padding: 90px 0 130px; border-top: 1px solid var(--line); }

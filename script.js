@@ -278,6 +278,12 @@
       .to(f, { x: () => X() * 1.45, y: () => Y() * 1.45, scale: s * 1.5, opacity: 0.35, duration: 1, ease: "power1.in" }, 1.1);
   });
 
+  /* ---------- Contact details ---------- */
+  gsap.from(".clist li", {
+    y: 40, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.08,
+    scrollTrigger: { trigger: ".clist", start: "top 85%" },
+  });
+
   /* ---------- Footer logo ---------- */
   gsap.from(".logo--big, .footer__ready > *", {
     y: 40, opacity: 0, duration: 1, ease: "power3.out", stagger: 0.08,
